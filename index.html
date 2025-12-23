@@ -171,6 +171,7 @@
             font-size: 0.9em;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <header>
@@ -194,12 +195,12 @@
             <canvas id="triangleCanvas" width="600" height="600"></canvas>
             
             <div class="explanation">
-                <p><strong>Concept for VWO 4:</strong></p>
-                <p>1. We start on the <strong>Unit Circle</strong> (radius = 1) at <strong>P1 (0, 1)</strong>, which corresponds to an angle of <strong>90°</strong>.</p>
-                <p>2. An equilateral triangle divides the circle into three equal parts of <strong>120°</strong> each.</p>
-                <p>3. To find <span class="highlight-blue">P2</span>, we add 120°:  90° + 120° = <strong>210°</strong>.</p>
-                <p>4. To find <span class="highlight-red">P3</span>, we subtract 120°: 90° - 120° = <strong>-30°</strong> (or 330°).</p>
-                <p>5. We use standard VWO "Exact Values" for coordinates: (cos(angle), sin(angle)).</p>
+                <p><strong>Geometric Calculation Logic</strong></p>
+                <p><strong>Initialization:</strong> We establish the unit circle (r=1) and anchor the first vertex, P1, at the coordinate (0, 1), corresponding to an angle of 90°.</p>
+                <p><strong>Rotational Symmetry:</strong> Because the inscribed triangle is equilateral, the vertices must be spaced exactly 120° apart.</p>
+                <p><strong>Calculating P2:</strong> We add 120° to our starting angle: 90° + 120° = <strong>210°</strong>.</p>
+                <p><strong>Calculating P3:</strong> We subtract 120° from our starting angle: 90° - 120° = <strong>330°</strong> (or -30°).</p>
+                <p><strong>Coordinate Conversion:</strong> Final (x, y) coordinates are derived using standard exact trigonometric values: (cos θ, sin θ).</p>
             </div>
         </div>
 
@@ -265,7 +266,7 @@
                 </div>
             </div>
             <div class="explanation">
-                <p><strong>VWO 4 Insight:</strong> In the left circle, every "ring" gets the same number of points, even though outer rings have more area. This makes the center look crowded. In the right circle, the number of points is proportional to the area, giving a fair "random" selection.</p>
+                <p><strong>The Key Difference:</strong> In the left circle, points cluster heavily in the center because we're picking the radius uniformly. This means each "ring" of the circle gets the same number of points, even though outer rings have much more area. In the right circle, we truly pick random points from the entire circle area, so points spread evenly and naturally concentrate less in the center. This difference in "density" is why the two methods give different probabilities!</p>
             </div>
         </div>
 
