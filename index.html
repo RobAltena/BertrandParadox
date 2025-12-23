@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bertrand's Paradox - Single Page Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+            max-width: 200px;
+        }
+
+        nav button:hover {
+            background-color: #555;
+        }
+
+        nav button.active {
+            background-color: #667eea;
+            border-bottom: 4px solid #764ba2;
+        }
+
+        .container {
+            flex: 1;
+            padding: 30px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .page {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            display: none;
+            max-width: 900px;
+            width: 100%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        canvas {
+            border: 1px solid #e0e0e0;
+            background-color: #fff;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .explanation {
+            max-width: 700px;
+            text-align: left;
+            color: #555;
+            line-height: 1.6;
+            margin-top: 20px;
+            font-size: 14px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .explanation p {
+            margin-bottom: 10px;
+        }
+
+        .highlight-green { color: #28a745; font-weight: bold; }
+        .highlight-red { color: #d9534f; font-weight: bold; }
+        .highlight-blue { color: #0275d8; font-weight: bold; }
+
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .comparison-item {
+            text-align: center;
+        }
+
+        .label {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        footer {
+            background-color: #333;
+            color: #ccc;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Bertrand's Paradox</h1>
+        <p>Exploring Three Solutions to a Geometric Probability Problem</p>
+    </header>
+
+    <nav>
+        <button class="nav-btn active" data-page="triangle">Triangle Calculation</button>
+        <button class="nav-btn" data-page="solution1">Solution 1: 1/3</button>
+        <button class="nav-btn" data-page="solution2">Solution 2: 1/2</button>
+        <button class="nav-btn" data-page="solution3">Solution 3: 1/4</button>
+        <button class="nav-btn" data-page="density">Density Comparison</button>
+        <button class="nav-btn" data-page="analogies">Analogies</button>
+    </nav>
+
+    <div class="container">
+        <!-- Triangle Calculation Page -->
+        <div id="triangle" class="page active">
+            <h2>Calculating the Inscribed Triangle</h2>
+            <canvas id="triangleCanvas" width="600" height="600"></canvas>
+            
+            <div class="explanation">
+                <p><strong>Concept for VWO 4:</strong></p>
+                <p>1. We start on the <strong>Unit Circle</strong> (radius = 1) at <strong>P1 (0, 1)</strong>, which corresponds to an angle of <strong>90°</strong>.</p>
+                <p>2. An equilateral triangle divides the circle into three equal parts of <strong>120°</strong> each.</p>
+                <p>3. To find <span class="highlight-blue">P2</span>, we add 120°:  90° + 120° = <strong>210°</strong>.</p>
+                <p>4. To find <span class="highlight-red">P3</span>, we subtract 120°: 90° - 120° = <strong>-30°</strong> (or 330°).</p>
+                <p>5. We use standard VWO "Exact Values" for coordinates: (cos(angle), sin(angle)).</p>
+            </div>
+        </div>
+
+        <!-- Solution 1 Page -->
+        <div id="solution1" class="page">
+            <h2>Solution 1: Random Endpoints</h2>
+            <div class="stats" id="statsDisplay1">Chords: 0 | Longer: 0 | Prob: 0.00%</div>
+            <canvas id="solutionCanvas1" width="600" height="600"></canvas>
+            
+            <div class="explanation">
+                <p><strong>Method:</strong> Choose two random points on the circle to form a chord.</p>
+                <p>1. We fix the first point at <strong>(0, 1)</strong>. 
+                <br>2. To make a chord longer than the side of our triangle, the second point must fall on the arc <strong>between P2 and P3</strong>.
+                <br>3. Since that arc is exactly <strong>120°</strong> out of 360°, the theoretical probability is <strong>1/3 (33.3%)</strong>.</p>
+                <p>The <span class="highlight-green">Green Chords</span> are longer than the triangle side, <span class="highlight-red">Red Chords</span> are shorter.</p>
+            </div>
+        </div>
+
+        <!-- Solution 2 Page -->
+        <div id="solution2" class="page">
+            <h2>Solution 2: The "1/2" Visualization</h2>
+            <div class="stats" id="statsDisplay2">Chords: 0 | Longer: 0 | Prob: 0.00%</div>
+            <canvas id="solutionCanvas2" width="600" height="600"></canvas>
+            
+            <div class="explanation">
+                <p><strong>Method:</strong> To visualize the 1/2 probability, we restrict the random choice to <strong>horizontal chords</strong> in the bottom half of the circle (where y is between -1 and 0).</p>
+                <p>1. The base of our equilateral triangle sits exactly at the horizontal line <strong>y = -0.5</strong>.</p>
+                <p>2. Any horizontal chord drawn <strong>above</strong> this line (closer to the center) is <span class="highlight-green">longer</span> than the triangle side.</p>
+                <p>3. Any chord drawn <strong>below</strong> this line is <span class="highlight-red">shorter</span>.</p>
+                <p>The lines now accumulate to show that the area above and below the dashed line in this section are equal.</p>
+            </div>
+        </div>
+
+        <!-- Solution 3 Page -->
+        <div id="solution3" class="page">
+            <h2>Solution 3: Random Midpoint</h2>
+            <div class="stats" id="statsDisplay3">Midpoints: 0 | Longer: 0 | Prob: 0.00%</div>
+            <canvas id="solutionCanvas3" width="600" height="600"></canvas>
+            
+            <div class="explanation">
+                <p><strong>Method:</strong> Choose a random point <strong>anywhere</strong> inside the circle. This point is defined as the <strong>midpoint</strong> of the chord.</p>
+                <p>1. For a chord to be longer than the triangle side, its midpoint must fall within the triangle's <strong>incircle</strong>.</p>
+                <p>2. The incircle has a radius of <strong>0.5</strong>. Its area is π · 0.5² = 0.25π.</p>
+                <p>3. The total area is π · 1² = π.</p>
+                <p>4. Since 0.25π / π = 1/4, the probability is exactly <strong>25%</strong>.</p>
+                <p>Notice how the <span class="highlight-green">green midpoints</span> only appear inside the inner <span class="highlight-blue">blue circle</span>.</p>
+            </div>
+        </div>
+
+        <!-- Density Comparison Page -->
+        <div id="density" class="page">
+            <h2>Solution 2 vs. Solution 3: The "Density" Secret</h2>
+            <div class="comparison-container">
+                <div class="comparison-item">
+                    <div class="label">Picking Radius & Angle (Sol 2)</div>
+                    <canvas id="canvasSol2" width="350" height="350"></canvas>
+                    <p>Clustered in the center (1/2)</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="label">True Uniform Sampling (Sol 3)</div>
+                    <canvas id="canvasSol3" width="350" height="350"></canvas>
+                    <p>Evenly spread (1/4)</p>
+                </div>
+            </div>
+            <div class="explanation">
+                <p><strong>VWO 4 Insight:</strong> In the left circle, every "ring" gets the same number of points, even though outer rings have more area. This makes the center look crowded. In the right circle, the number of points is proportional to the area, giving a fair "random" selection.</p>
+            </div>
+        </div>
+
+        <!-- Analogies Page -->
+        <div id="analogies" class="page">
+            <h2>Bertrand's Paradox Analogies</h2>
+            <img src="Bertrand Paradox Analogies.png" alt="Bertrand's Paradox Analogies" style="max-width: 100%; height: auto; border-radius: 8px;">
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Bertrand's Paradox Visualization | Exploring probability and sampling methods</p>
+    </footer>
+
+    <script>
+        // ============ PAGE NAVIGATION ============
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page');
+        let simulationState = {};
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const pageId = button.dataset.page;
+                
+                // Update active button
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // Update active page
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+                
+                // Start animation if needed
+                if (pageId === 'triangle' && !simulationState.triangleStarted) {
+                    simulationState.triangleStarted = true;
+                    startTriangleAnimation();
+                } else if (pageId === 'solution1' && !simulationState.solution1Started) {
+                    simulationState.solution1Started = true;
+                    startSolution1();
+                } else if (pageId === 'solution2' && !simulationState.solution2Started) {
+                    simulationState.solution2Started = true;
+                    startSolution2();
+                } else if (pageId === 'solution3' && !simulationState.solution3Started) {
+                    simulationState.solution3Started = true;
+                    startSolution3();
+                } else if (pageId === 'density' && !simulationState.densityStarted) {
+                    simulationState.densityStarted = true;
+                    startDensityComparison();
+                }
+            });
+        });
+
+        // ============ TRIANGLE CALCULATION ============
+        function startTriangleAnimation() {
+            const canvas = document.getElementById('triangleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 200;
+
+            const axisColor = '#ddd';
+            const circleColor = '#999';
+            const p1Color = '#333';
+            const p2Color = '#0275d8';
+            const p3Color = '#d9534f';
+            const guideColor = 'rgba(100, 100, 100, 0.3)';
+
+            let state = 0;
+            let frameCount = 0;
+            let angleP2Sweep = 90;
+            let angleP3Sweep = 90;
+
+            function toCartesian(angleDeg) {
+                const angleRad = (angleDeg * Math.PI) / 180;
+                return {
+                    x: cx + radius * Math.cos(angleRad),
+                    y: cy - radius * Math.sin(angleRad)
+                };
+            }
+
+            function drawBase() {
+                ctx.clearRect(0, 0, width, height);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = axisColor;
+                ctx.lineWidth = 1;
+                ctx.moveTo(0, cy); ctx.lineTo(width, cy);
+                ctx.moveTo(cx, 0); ctx.lineTo(cx, height);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = circleColor;
+                ctx.lineWidth = 2;
+                ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                
+                ctx.fillStyle = '#777';
+                ctx.font = '14px Arial';
+                ctx.fillText('(0,0)', cx + 5, cy + 15);
+            }
+
+            function drawPoint(angle, label, coordsText, color, isLarge) {
+                const pos = toCartesian(angle);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = guideColor;
+                ctx.setLineDash([5, 5]);
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.beginPath();
+                ctx.fillStyle = color;
+                ctx.arc(pos.x, pos.y, isLarge ? 6 : 4, 0, 2 * Math.PI);
+                ctx.fill();
+
+                ctx.font = isLarge ? 'bold 16px Arial' : '14px Arial';
+                
+                let textX = pos.x + 15;
+                let textY = pos.y;
+                if (angle > 90 && angle < 270) textX = pos.x - 80;
+                if (angle > 180) textY = pos.y + 20;
+                if (angle === 90) { textX = pos.x + 10; textY = pos.y + 5;}
+                
+                ctx.fillText(label, textX, textY);
+                
+                if (coordsText) {
+                    ctx.font = '14px Consolas, monospace';
+                    ctx.fillText(coordsText, textX, textY + 20);
+                    ctx.font = 'italic 14px Arial';
+                    ctx.fillText(`${angle}°`, textX, textY + 38);
+                }
+            }
+
+            function drawSweepArc(startAngle, currentAngle, color, label) {
+                ctx.beginPath();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 3;
+                const startRad = (startAngle * Math.PI) / -180;
+                const endRad = (currentAngle * Math.PI) / -180;
+                ctx.arc(cx, cy, 50, startRad, endRad, currentAngle > startAngle);
+                ctx.stroke();
+
+                const midAngle = (startAngle + currentAngle) / 2;
+                const labelPos = toCartesian(midAngle);
+                const labelX = cx + (labelPos.x - cx) * 0.3;
+                const labelY = cy + (labelPos.y - cy) * 0.3;
+                ctx.fillStyle = color;
+                ctx.font = 'bold 14px Arial';
+                ctx.fillText(label, labelX, labelY);
+            }
+            
+            function drawFinalTriangle() {
+                const p1 = toCartesian(90);
+                const p2 = toCartesian(210);
+                const p3 = toCartesian(330);
+
+                ctx.beginPath();
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.lineTo(p3.x, p3.y);
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            function animate() {
+                drawBase();
+                drawPoint(90, 'P1 (Start)', '(0, 1)', p1Color, true);
+
+                switch(state) {
+                    case 0:
+                        frameCount++;
+                        ctx.fillStyle = '#555';
+                        ctx.font = '16px Arial';
+                        ctx.fillText("Starting at P1 (90°)...", 20, 30);
+                        if(frameCount > 60) { state = 1; frameCount = 0; }
+                        break;
+
+                    case 1:
+                        angleP2Sweep += 1.5;
+                        drawSweepArc(90, angleP2Sweep, p2Color, "+120°");
+                        drawPoint(angleP2Sweep, 'Calculating P2...', null, p2Color, false);
+                        
+                        if(angleP2Sweep >= 210) { 
+                            angleP2Sweep = 210; 
+                            state = 2; 
+                        }
+                        break;
+
+                    case 2:
+                        frameCount++;
+                        drawSweepArc(90, 210, p2Color, "+120°");
+                        drawPoint(210, 'P2', '(-½√3, -½)', p2Color, true);
+                        
+                        if(frameCount > 100) { state = 3; frameCount = 0; }
+                        break;
+
+                    case 3:
+                        drawPoint(210, 'P2', '(-½√3, -½)', p2Color, true);
+                        
+                        angleP3Sweep -= 1.5;
+                        drawSweepArc(90, angleP3Sweep, p3Color, "-120°");
+                        let displayAngle = angleP3Sweep < 0 ? angleP3Sweep + 360 : angleP3Sweep;
+                        drawPoint(displayAngle, 'Calculating P3...', null, p3Color, false);
+
+                        if(angleP3Sweep <= -30) { 
+                            angleP3Sweep = -30; 
+                            state = 4; 
+                        }
+                        break;
+
+                    case 4:
+                        drawPoint(210, 'P2', '(-½√3, -½)', p2Color, true);
+
+                        frameCount++;
+                        drawSweepArc(90, -30, p3Color, "-120°");
+                        drawPoint(330, 'P3', '(½√3, -½)', p3Color, true);
+
+                        if(frameCount > 100) { state = 5; frameCount = 0; }
+                        break;
+                    
+                    case 5:
+                        drawFinalTriangle();
+                        drawPoint(90, 'P1', '(0, 1)', p1Color, true);
+                        drawPoint(210, 'P2', '(-½√3, -½)', p2Color, true);
+                        drawPoint(330, 'P3', '(½√3, -½)', p3Color, true);
+                        
+                        ctx.fillStyle = '#333'; 
+                        ctx.font = "bold 18px Arial";
+                        ctx.fillText("Inscribed Equilateral Triangle Complete", cx - 150, height - 20);
+                        return; 
+                }
+
+                requestAnimationFrame(animate);
+            }
+
+            setTimeout(animate, 500);
+        }
+
+        // ============ SOLUTION 1 ============
+        function startSolution1() {
+            const canvas = document.getElementById('solutionCanvas1');
+            const ctx = canvas.getContext('2d');
+            const statsDisplay = document.getElementById('statsDisplay1');
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 200;
+
+            let totalChords = 0;
+            let longerChords = 0;
+
+            function toCartesian(angleDeg) {
+                const angleRad = (angleDeg * Math.PI) / 180;
+                return {
+                    x: cx + radius * Math.cos(angleRad),
+                    y: cy - radius * Math.sin(angleRad) 
+                };
+            }
+
+            function drawBase() {
+                ctx.clearRect(0, 0, width, height);
+                
+                const t1 = toCartesian(90);
+                const t2 = toCartesian(210);
+                const t3 = toCartesian(330);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#eee';
+                ctx.lineWidth = 2;
+                ctx.moveTo(t1.x, t1.y); ctx.lineTo(t2.x, t2.y);
+                ctx.lineTo(t3.x, t3.y); ctx.closePath();
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(40, 167, 69, 0.1)';
+                ctx.lineWidth = 15;
+                ctx.arc(cx, cy, radius, (210 * Math.PI) / -180, (330 * Math.PI) / -180, true);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = '#999';
+                ctx.lineWidth = 2;
+                ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                const p1 = toCartesian(90);
+                ctx.fillStyle = '#333';
+                ctx.beginPath();
+                ctx.arc(p1.x, p1.y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.font = '12px Arial';
+                ctx.fillText("Fixed P1", p1.x - 20, p1.y - 15);
+            }
+
+            function addChord() {
+                const randomAngle = Math.random() * 360;
+                const p1 = toCartesian(90);
+                const p2 = toCartesian(randomAngle);
+
+                const isLonger = (randomAngle > 210 && randomAngle < 330);
+
+                ctx.beginPath();
+                ctx.strokeStyle = isLonger ? 'rgba(40, 167, 69, 0.6)' : 'rgba(217, 83, 79, 0.4)';
+                ctx.lineWidth = 1;
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.fillStyle = isLonger ? '#28a745' : '#d9534f';
+                ctx.arc(p2.x, p2.y, 3, 0, 2 * Math.PI);
+                ctx.fill();
+
+                totalChords++;
+                if (isLonger) longerChords++;
+                
+                const prob = ((longerChords / totalChords) * 100).toFixed(2);
+                statsDisplay.innerText = `Chords: ${totalChords} | Longer: ${longerChords} | Prob: ${prob}%`;
+            }
+
+            drawBase();
+            
+            function loop() {
+                let speed = totalChords < 100 ? 1 : 5;
+                for(let i=0; i < speed; i++) {
+                    if (totalChords < 2000) addChord(); 
+                }
+                
+                if (totalChords < 2000) {
+                    requestAnimationFrame(loop);
+                }
+            }
+
+            loop();
+        }
+
+        // ============ SOLUTION 2 ============
+        function startSolution2() {
+            const canvas = document.getElementById('solutionCanvas2');
+            const ctx = canvas.getContext('2d');
+            const statsDisplay = document.getElementById('statsDisplay2');
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 200;
+
+            let totalChords = 0;
+            let longerChords = 0;
+
+            function toCanvas(x_unit, y_unit) {
+                return {
+                    x: cx + x_unit * radius,
+                    y: cy - y_unit * radius
+                };
+            }
+
+            function drawStaticElements() {
+                ctx.beginPath();
+                ctx.strokeStyle = '#999';
+                ctx.lineWidth = 2;
+                ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                const t1 = toCanvas(0, 1);
+                const t2 = toCanvas(-Math.sqrt(3)/2, -0.5);
+                const t3 = toCanvas(Math.sqrt(3)/2, -0.5);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 3;
+                ctx.moveTo(t1.x, t1.y); ctx.lineTo(t2.x, t2.y);
+                ctx.lineTo(t3.x, t3.y); ctx.closePath();
+                ctx.stroke();
+
+                const boundaryLeft = toCanvas(-1, -0.5);
+                const boundaryRight = toCanvas(1, -0.5);
+                ctx.beginPath();
+                ctx.strokeStyle = '#0275d8';
+                ctx.setLineDash([10, 5]);
+                ctx.lineWidth = 3;
+                ctx.moveTo(boundaryLeft.x, boundaryLeft.y);
+                ctx.lineTo(boundaryRight.x, boundaryRight.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                ctx.fillStyle = '#0275d8';
+                ctx.font = "bold 14px Arial";
+                ctx.fillText("y = -0.5 (Boundary)", boundaryRight.x + 10, boundaryRight.y + 5);
+            }
+
+            function addChord() {
+                const randomYunit = -Math.random(); 
+                const isLonger = (randomYunit > -0.5);
+
+                const xLen = Math.sqrt(1 - randomYunit * randomYunit);
+                const startPt = toCanvas(-xLen, randomYunit);
+                const endPt = toCanvas(xLen, randomYunit);
+
+                ctx.beginPath();
+                ctx.strokeStyle = isLonger ? 'rgba(40, 167, 69, 0.2)' : 'rgba(217, 83, 79, 0.2)';
+                ctx.lineWidth = 1;
+                ctx.moveTo(startPt.x, startPt.y);
+                ctx.lineTo(endPt.x, endPt.y);
+                ctx.stroke();
+
+                totalChords++;
+                if (isLonger) longerChords++;
+                
+                const prob = ((longerChords / totalChords) * 100).toFixed(2);
+                statsDisplay.innerText = `Chords (in bottom half): ${totalChords} | Longer: ${longerChords} | Prob: ${prob}%`;
+            }
+
+            ctx.clearRect(0, 0, width, height);
+            drawStaticElements();
+            
+            function loop() {
+                let speed = 15;
+                for(let i=0; i < speed; i++) {
+                    if (totalChords < 3000) addChord(); 
+                }
+                
+                if (totalChords < 3000) {
+                    requestAnimationFrame(loop);
+                }
+            }
+
+            setTimeout(loop, 800);
+        }
+
+        // ============ SOLUTION 3 ============
+        function startSolution3() {
+            const canvas = document.getElementById('solutionCanvas3');
+            const ctx = canvas.getContext('2d');
+            const statsDisplay = document.getElementById('statsDisplay3');
+
+            const width = canvas.width;
+            const height = canvas.height;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = 200;
+            const innerRadius = 100;
+
+            let totalPoints = 0;
+            let longerChords = 0;
+
+            function drawBase() {
+                ctx.clearRect(0, 0, width, height);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#999';
+                ctx.lineWidth = 2;
+                ctx.arc(cx, cy, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.strokeStyle = 'rgba(2, 117, 216, 0.5)';
+                ctx.fillStyle = 'rgba(2, 117, 216, 0.05)';
+                ctx.arc(cx, cy, innerRadius, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = '#0275d8';
+                ctx.font = "bold 12px Arial";
+                ctx.fillText("Success Zone (r=0.5)", cx - 60, cy - innerRadius - 10);
+            }
+
+            function addRandomMidpoint() {
+                let mx_unit, my_unit, distSq;
+                do {
+                    mx_unit = (Math.random() * 2) - 1;
+                    my_unit = (Math.random() * 2) - 1;
+                    distSq = mx_unit * mx_unit + my_unit * my_unit;
+                } while (distSq > 1);
+
+                const dist = Math.sqrt(distSq);
+                const isLonger = (dist < 0.5);
+
+                const canvasX = cx + mx_unit * radius;
+                const canvasY = cy - my_unit * radius;
+
+                ctx.beginPath();
+                ctx.fillStyle = isLonger ? 'rgba(40, 167, 69, 0.7)' : 'rgba(217, 83, 79, 0.5)';
+                ctx.arc(canvasX, canvasY, 3, 0, 2 * Math.PI);
+                ctx.fill();
+
+                totalPoints++;
+                if (isLonger) longerChords++;
+                
+                const prob = ((longerChords / totalPoints) * 100).toFixed(2);
+                statsDisplay.innerText = `Midpoints: ${totalPoints} | Longer: ${longerChords} | Prob: ${prob}%`;
+            }
+
+            drawBase();
+
+            function loop() {
+                let speed = totalPoints < 100 ? 2 : 20;
+                for(let i=0; i < speed; i++) {
+                    if (totalPoints < 4000) addRandomMidpoint(); 
+                }
+                
+                if (totalPoints < 4000) {
+                    requestAnimationFrame(loop);
+                }
+            }
+
+            setTimeout(loop, 800);
+        }
+
+        // ============ DENSITY COMPARISON ============
+        function startDensityComparison() {
+            const c2 = document.getElementById('canvasSol2').getContext('2d');
+            const c3 = document.getElementById('canvasSol3').getContext('2d');
+            const r = 150;
+            const cx = 175;
+            const cy = 175;
+
+            for(let i=0; i<2000; i++) {
+                // Sol 2: Random Radius & Angle
+                let angle = Math.random() * Math.PI * 2;
+                let dist2 = Math.random() * r;
+                c2.fillStyle = dist2 < r/2 ? '#28a745' : '#d9534f';
+                c2.beginPath();
+                c2.arc(cx + dist2*Math.cos(angle), cy + dist2*Math.sin(angle), 2, 0, 7);
+                c2.fill();
+
+                // Sol 3: Uniform Rejection
+                let ux, uy;
+                do {
+                    ux = (Math.random() * 2 - 1);
+                    uy = (Math.random() * 2 - 1);
+                } while (ux*ux + uy*uy > 1);
+                let dist3Sq = Math.sqrt(ux*ux + uy*uy) * r;
+                c3.fillStyle = dist3Sq < r/2 ? '#28a745' : '#d9534f';
+                c3.beginPath();
+                c3.arc(cx + ux*r, cy + uy*r, 2, 0, 7);
+                c3.fill();
+            }
+        }
+
+        // Start the triangle animation on load
+        startTriangleAnimation();
+    </script>
+</body>
+</html>
