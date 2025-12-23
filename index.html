@@ -180,7 +180,8 @@
     </header>
 
     <nav>
-        <button class="nav-btn active" data-page="triangle">Triangle Calculation</button>
+        <button class="nav-btn active" data-page="problem">The Problem</button>
+        <button class="nav-btn" data-page="triangle">Triangle Calculation</button>
         <button class="nav-btn" data-page="solution1">Solution 1: 1/3</button>
         <button class="nav-btn" data-page="solution2">Solution 2: 1/2</button>
         <button class="nav-btn" data-page="solution3">Solution 3: 1/4</button>
@@ -189,8 +190,22 @@
     </nav>
 
     <div class="container">
+        <!-- Problem Page -->
+        <div id="problem" class="page active">
+            <h2>Bertrand's Paradox: The Problem</h2>
+            <div class="explanation">
+                <p>Imagine a circle with an equilateral triangle inscribed inside it. Now imagine we randomly select a chord (a straight line connecting two points on the circle).</p>
+                <p><strong>The Question:</strong> What is the probability that this random chord is longer than the side of the inscribed triangle?</p>
+                <p>This seems like a straightforward geometry problem, but here's the paradox: depending on <em>how</em> you choose the random chord, you can get three different answers!</p>
+                <p><strong>Method 1 (Random Endpoints):</strong> Pick two random points on the circle. The probability is <strong>1/3 (33.3%)</strong>.</p>
+                <p><strong>Method 2 (Random Radius & Angle):</strong> Pick a random radius and a random point along that radius. The probability is <strong>1/2 (50%)</strong>.</p>
+                <p><strong>Method 3 (Random Midpoint):</strong> Pick a random point inside the circle to be the chord's midpoint. The probability is <strong>1/4 (25%)</strong>.</p>
+                <p>All three methods seem perfectly reasonable, yet they give different answers! This is Bertrand's Paradox—a reminder that "randomness" needs careful definition in geometry.</p>
+            </div>
+        </div>
+
         <!-- Triangle Calculation Page -->
-        <div id="triangle" class="page active">
+        <div id="triangle" class="page">
             <h2>Calculating the Inscribed Triangle</h2>
             <canvas id="triangleCanvas" width="600" height="600"></canvas>
             
